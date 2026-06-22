@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mesa de Partes Virtual — Expediente 2026-KS-ESPAÑA</title>
+<style>
+  :root{
+    --azul:#1F4FFF;
+    --azul-osc:#143399;
+    --tinta:#15171c;
+    --gris:#5b626e;
+    --gris-cl:#8a909b;
+    --linea:#c9ced8;
+    --linea-su:#e4e7ee;
+    --papel:#ffffff;
+    --fondo:#eceef2;
+    --sello-rojo:#9a1f2b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:var(--fondo);
+    color:var(--tinta);
+    line-height:1.5;
+    min-height:100vh;
+    padding:24px 16px 64px;
+    -webkit-font-smoothing:antialiased;
+    background-image:
+      repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(31,79,255,.025) 27px,rgba(31,79,255,.025) 28px);
+  }
+
+  /* ---------- Barra institucional ---------- */
+  .topbar{
+    max-width:880px;margin:0 auto 14px;
+    background:var(--tinta);color:#fff;
+    display:flex;align-items:center;gap:12px;
+    padding:8px 16px;font-size:12px;letter-spacing:.04em;
+    border-radius:3px 3px 0 0;
+  }
+  .topbar .crest{
+    width:26px;height:26px;flex:0 0 26px;border-radius:50%;
+    background:radial-gradient(circle at 50% 38%,#fff 0 22%,var(--azul) 23% 48%,#fff 49% 56%,var(--azul) 57%);
+    border:2px solid #fff;
+  }
+  .topbar b{font-weight:700}
+  .topbar .gob{margin-left:auto;color:var(--gris-cl);font-size:11px}
+
+  /* ---------- Hoja / expediente ---------- */
+  .hoja{
+    max-width:880px;margin:0 auto;
+    background:var(--papel);
+    border:1px solid var(--linea);
+    border-top:4px solid var(--azul);
+    box-shadow:0 1px 0 rgba(0,0,0,.04),0 18px 40px -28px rgba(20,23,28,.5);
+    position:relative;
+    overflow:hidden;
+  }
+  .membrete{
+    display:flex;align-items:flex-start;gap:14px;
+    padding:18px 26px 14px;border-bottom:1.5px solid var(--tinta);
+  }
+  .membrete .escudo{
+    width:46px;height:46px;flex:0 0 46px;margin-top:2px;
+    border:1.5px solid var(--tinta);border-radius:4px;
+    display:grid;place-items:center;background:#fff;
+  }
+  .membrete .escudo svg{width:30px;height:30px}
+  .membrete h1{font-size:15px;font-weight:800;letter-spacing:.02em;line-height:1.25}
+  .membrete p{font-size:11.5px;color:var(--gris);margin-top:2px}
+  .membrete .der{margin-left:auto;text-align:right;font-size:10.5px;color:var(--gris-cl);line-height:1.6;font-variant-numeric:tabular-nums}
+  .membrete .der b{color:var(--tinta);font-weight:700}
+
+  .cuerpo{padding:26px 26px 30px}
+
+  /* etiquetas de campo */
+  .mono{font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace}
+  .eyebrow{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--azul-osc);font-weight:700}
+  h2.titulo{font-size:21px;font-weight:800;letter-spacing:-.01em;margin:6px 0 4px}
+  .sub{font-size:12.5px;color:var(--gris);margin-bottom:20px}
+
+  /* tabla de ficha */
+  table.ficha{width:100%;border-collapse:collapse;font-size:12.5px;margin:6px 0 22px}
+  table.ficha td{border:1px solid var(--linea);padding:9px 12px;vertical-align:top}
+  table.ficha td.k{background:#f3f5fa;width:38%;font-weight:600;color:var(--gris);
+    text-transform:uppercase;letter-spacing:.05em;font-size:10.5px}
+  table.ficha td.v{font-weight:600}
+  .estado-chip{display:inline-flex;align-items:center;gap:7px;
+    background:#fff4d6;border:1px solid #e3bf57;color:#7a5a02;
+    padding:3px 9px;border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.03em}
+  .estado-chip::before{content:"";width:7px;height:7px;border-radius:50%;background:#d99a00;
+    animation:latido 1.6s infinite}
+  @keyframes latido{0%,100%{opacity:1}50%{opacity:.3}}
+
+  /* secciones tipo articulo */
+  .bloque{margin-bottom:18px}
+  .bloque .rotulo{font-size:11px;letter-spacing:.16em;font-weight:800;color:var(--tinta);
+    border-bottom:1px solid var(--linea);padding-bottom:5px;margin-bottom:10px}
+  .lista{list-style:none;font-size:13px}
+  .lista li{position:relative;padding:5px 0 5px 26px;border-bottom:1px dotted var(--linea-su)}
+  .lista li:last-child{border-bottom:0}
+  .lista li::before{content:attr(data-n);position:absolute;left:0;top:5px;
+    font-family:ui-monospace,monospace;font-size:11px;color:var(--azul);font-weight:700}
+  .lista .anidada{list-style:none;margin:6px 0 0 4px}
+  .lista .anidada li{padding:3px 0 3px 18px;border:0;color:var(--gris);font-size:12.5px}
+  .lista .anidada li::before{content:"—";color:var(--gris-cl);font-family:inherit}
+
+  .nota-amb{font-size:12.5px;font-style:italic;color:var(--gris);
+    border-left:3px solid var(--azul);background:#f5f7ff;padding:10px 14px;border-radius:0 4px 4px 0;margin-top:6px}
+
+  .prioridad{display:flex;align-items:center;gap:10px;margin:18px 0 4px;font-size:13px}
+  .prioridad .badge{background:var(--sello-rojo);color:#fff;font-weight:800;font-size:11px;
+    letter-spacing:.1em;padding:4px 12px;border-radius:3px}
+
+  /* texto resolutivo */
+  .resolutivo{font-size:13.5px;line-height:1.75;color:#22262e}
+  .resolutivo p{margin-bottom:13px}
+  .resolutivo .sangria{background:#f7f8fb;border:1px solid var(--linea-su);
+    border-left:3px solid var(--azul);padding:14px 16px;border-radius:0 4px 4px 0;font-weight:500}
+
+  /* firma */
+  .firma{margin-top:30px;padding-top:8px}
+  .firma .rubrica{font-family:"Segoe Script","Brush Script MT",cursive;font-size:30px;
+    color:var(--azul-osc);transform:rotate(-3deg);display:inline-block;margin-bottom:-6px}
+  .firma .linea-f{border-top:1.5px solid var(--tinta);width:230px;padding-top:5px}
+  .firma .linea-f b{font-size:13px}
+  .firma .linea-f span{display:block;font-size:11px;color:var(--gris)}
+
+  /* sellos */
+  .sello{position:absolute;font-weight:800;letter-spacing:.06em;
+    border:2.5px solid;border-radius:6px;padding:6px 14px;font-size:13px;
+    text-transform:uppercase;opacity:.78;pointer-events:none;text-align:center;line-height:1.15}
+  .sello.azul{color:var(--azul);border-color:var(--azul)}
+  .sello.rojo{color:var(--sello-rojo);border-color:var(--sello-rojo)}
+  .sello.peq{font-size:10px;padding:7px 12px;max-width:180px}
+
+  /* pie de hoja */
+  .pie{display:flex;align-items:center;gap:16px;border-top:1px dashed var(--linea);
+    margin-top:26px;padding-top:14px;font-size:10px;color:var(--gris-cl)}
+  .barcode{height:34px;flex:0 0 auto;display:flex;gap:1.5px;align-items:flex-end}
+  .barcode i{display:block;width:2px;height:100%;background:var(--tinta)}
+  .qr{width:42px;height:42px;flex:0 0 42px;
+    background:
+      conic-gradient(from 0deg,#000 90deg,#fff 0 180deg,#000 0 270deg,#fff 0) ,
+      #000;
+    background-size:7px 7px;border:3px solid #fff;outline:1px solid var(--tinta)}
+  .pie .meta{margin-left:auto;text-align:right;font-variant-numeric:tabular-nums}
+
+  /* botones */
+  .acciones{margin-top:24px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .btn{font:inherit;font-size:13px;font-weight:700;letter-spacing:.02em;cursor:pointer;
+    border:1px solid var(--azul);background:var(--azul);color:#fff;
+    padding:11px 20px;border-radius:4px;transition:transform .12s ease,background .15s ease;
+    display:inline-flex;align-items:center;gap:8px}
+  .btn:hover{background:var(--azul-osc);transform:translateY(-1px)}
+  .btn:active{transform:translateY(0)}
+  .btn.ghost{background:#fff;color:var(--azul)}
+  .btn.ghost:hover{background:#f1f4ff;color:var(--azul-osc)}
+  .btn:focus-visible{outline:3px solid #a8bcff;outline-offset:2px}
+  .btn .ar{font-size:15px;line-height:1}
+
+  /* navegación de secciones */
+  .seccion{display:none;animation:entra .45s ease both}
+  .seccion.activa{display:block}
+  @keyframes entra{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  .rastro{max-width:880px;margin:14px auto 0;display:flex;gap:6px;font-size:10.5px;
+    color:var(--gris-cl);letter-spacing:.05em;align-items:center;justify-content:center;flex-wrap:wrap}
+  .rastro span{display:inline-flex;align-items:center;gap:6px}
+  .rastro b{color:var(--azul);font-weight:700}
+  .rastro .sep{color:var(--linea)}
+
+  /* easter egg / modal sistema */
+  .overlay{position:fixed;inset:0;background:rgba(20,23,28,.55);backdrop-filter:blur(2px);
+    display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
+  .overlay.activa{display:flex;animation:entra .3s ease both}
+  .sistema{background:var(--papel);max-width:460px;width:100%;border-radius:6px;overflow:hidden;
+    border:1px solid var(--linea);box-shadow:0 30px 60px -20px rgba(0,0,0,.5)}
+  .sistema .barra{background:var(--tinta);color:#fff;padding:9px 16px;font-size:11px;
+    letter-spacing:.05em;display:flex;align-items:center;gap:8px}
+  .sistema .barra::before{content:"";width:9px;height:9px;border-radius:50%;
+    background:#36d07a;box-shadow:0 0 0 3px rgba(54,208,122,.25)}
+  .sistema .ct{padding:22px 22px 24px}
+  .sistema h3{font-size:14px;font-weight:800;letter-spacing:.04em;color:var(--azul-osc);margin-bottom:8px}
+  .sistema .desc{font-size:12.5px;color:var(--gris);font-style:italic;
+    background:#f5f7ff;border-left:3px solid var(--azul);padding:9px 12px;border-radius:0 4px 4px 0;margin-bottom:16px}
+  .opciones{display:flex;flex-direction:column;gap:9px}
+  .op{text-align:left;font:inherit;font-size:13px;font-weight:600;cursor:pointer;
+    background:#fff;border:1px solid var(--linea);color:var(--tinta);
+    padding:11px 14px;border-radius:5px;transition:.14s;display:flex;gap:10px;align-items:center}
+  .op:hover{border-color:var(--azul);background:#f3f6ff}
+  .op:focus-visible{outline:3px solid #a8bcff;outline-offset:2px}
+  .op .mark{font-family:ui-monospace,monospace;font-size:11px;color:var(--azul);font-weight:700}
+  .veredicto{display:none;font-size:13px;line-height:1.6;
+    border:1px dashed var(--azul);background:#f3f6ff;color:#1a2b66;
+    padding:14px;border-radius:5px;margin-top:4px}
+  .veredicto.activa{display:block;animation:entra .3s ease both}
+  .veredicto .vt{font-size:10.5px;letter-spacing:.16em;font-weight:800;color:var(--azul);display:block;margin-bottom:5px}
+
+  @media(max-width:560px){
+    body{padding:14px 8px 48px}
+    .membrete{flex-wrap:wrap}
+    .membrete .der{margin-left:0;text-align:left;width:100%;margin-top:6px}
+    .cuerpo{padding:20px 16px 24px}
+    table.ficha td.k{width:42%}
+    .sello{transform:scale(.82)!important;transform-origin:right top}
+    h2.titulo{font-size:18px}
+    .firma .rubrica{font-size:26px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="crest" aria-hidden="true"></span>
+  <b>PLATAFORMA ÚNICA DE TRÁMITE DOCUMENTARIO</b>
+  <span class="gob">gob · módulo simulado</span>
+</div>
+
+<!-- =================== SECCIÓN 1 =================== -->
+<main class="hoja">
+  <span id="sello-recibido" class="sello azul" style="top:90px;right:30px;transform:rotate(-9deg)">Recibido<br><span style="font-size:9px">M. de Partes</span></span>
+
+  <div class="membrete">
+    <div class="escudo" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#15171c" stroke-width="1.4">
+        <path d="M12 2 L20 6 V12 C20 17 16 20.5 12 22 C8 20.5 4 17 4 12 V6 Z"/>
+        <path d="M12 2 V22 M4 9 H20"/>
+      </svg>
+    </div>
+    <div>
+      <h1>MESA DE PARTES VIRTUAL</h1>
+      <p>Sistema de Gestión Documental de Asuntos Pendientes</p>
+    </div>
+    <div class="der">
+      Folio único<br><b class="mono">N.° 0001 / 0001</b><br>
+      Fecha de recepción<br><b class="mono" id="fecha-rec">—</b>
+    </div>
+  </div>
+
+  <div class="cuerpo">
+
+    <section class="seccion activa" id="s1" aria-label="Carátula del expediente">
+      <span class="eyebrow">Carátula de ingreso</span>
+      <h2 class="titulo">Registro de expediente digital</h2>
+      <p class="sub">El presente asiento se genera automáticamente al detectar un asunto pendiente sin trámite culminado.</p>
+
+      <table class="ficha">
+        <tr><td class="k">N.° de expediente</td><td class="v mono">2026-KS-ESPAÑA</td></tr>
+        <tr><td class="k">Sistema</td><td class="v">Gestión Documental de Asuntos Pendientes</td></tr>
+        <tr><td class="k">Administrada</td><td class="v">Srta. Kathi Salcedo</td></tr>
+        <tr><td class="k">Asunto</td><td class="v">Solicitud de invitación a salida recreativa previa a viaje internacional</td></tr>
+        <tr><td class="k">Estado</td><td class="v"><span class="estado-chip">EN EVALUACIÓN</span></td></tr>
+      </table>
+
+      <div class="acciones">
+        <button class="btn" onclick="irA('s2')">Ver expediente <span class="ar">→</span></button>
+      </div>
+    </section>
+
+    <!-- =================== SECCIÓN 2 =================== -->
+    <section class="seccion" id="s2" aria-label="Informe técnico y considerandos">
+      <span class="eyebrow">Informe N.° 002-2026-MPV</span>
+      <h2 class="titulo">Informe técnico y considerandos</h2>
+      <p class="sub">Documento de evaluación emitido por la unidad de asuntos pendientes.</p>
+
+      <div class="bloque">
+        <div class="rotulo">I. ANTECEDENTES</div>
+        <ul class="lista">
+          <li data-n="1.1">Próximo viaje académico a España — Universidad de León.</li>
+          <li data-n="1.2">Existencia de una invitación pendiente registrada en el sistema.</li>
+        </ul>
+      </div>
+
+      <div class="bloque">
+        <div class="rotulo">II. CONSIDERANDOS</div>
+        <ul class="lista">
+          <li data-n="2.1">Que, el sistema detecta una etapa de cierre previo a viaje internacional.</li>
+          <li data-n="2.2">Que, se considera pertinente una actividad recreativa antes del traslado.</li>
+          <li data-n="2.3">Que, se sugieren alternativas compatibles con la disponibilidad de la administrada:
+            <ul class="anidada">
+              <li>Cine (con canchita obligatoria).</li>
+              <li>Pizza.</li>
+              <li>Pollo a la brasa.</li>
+              <li>Bebida tipo piña colada.</li>
+            </ul>
+          </li>
+          <li data-n="2.4">Que, las ubicaciones sugeridas son Surquillo o Los Olivos.</li>
+        </ul>
+        <p class="nota-amb">Referencia ambiental: “Madrid presenta condiciones de cielo nublado con tendencia a lluvia ligera, asociada simbólicamente al periodo previo de transición internacional.”</p>
+      </div>
+
+      <div class="prioridad">
+        <span class="badge">PRIORIDAD ALTA</span>
+        <span style="color:var(--gris);font-size:12.5px">Atención sujeta a disponibilidad del administrado solicitante.</span>
+      </div>
+
+      <div class="acciones">
+        <button class="btn ghost" onclick="irA('s1')"><span class="ar">←</span> Volver</button>
+        <button class="btn" onclick="irA('s3')">Emitir resolución <span class="ar">→</span></button>
+      </div>
+
+      <span class="sello rojo peq" style="position:static;display:inline-block;margin-top:22px;transform:rotate(-2deg)">Informe emitido por sistema administrativo simulado</span>
+    </section>
+
+    <!-- =================== SECCIÓN 3 =================== -->
+    <section class="seccion" id="s3" aria-label="Resolución final">
+      <span class="eyebrow">Resolución administrativa</span>
+      <h2 class="titulo">Resolución del expediente 2026-KS-ESPAÑA</h2>
+      <p class="sub">Acto resolutivo final. Documento de carácter recreativo y no vinculante.</p>
+
+      <div class="resolutivo">
+        <p>Tras la evaluación del expediente, se concluye que existen condiciones suficientes para emitir la siguiente recomendación administrativa:</p>
+        <p class="sangria">Se solicita respetuosamente a la señorita Kathi Salcedo considerar una invitación a una salida de carácter recreativo y conversacional, en fecha, hora y lugar de su preferencia, antes de su viaje a España.</p>
+        <p>Toda respuesta será respetada conforme a los principios de libre decisión del administrado.</p>
+      </div>
+
+      <div class="firma">
+        <span class="rubrica">Kevin</span>
+        <div class="linea-f">
+          <b>Kevin</b>
+          <span>Solicitante del expediente 2026-KS-ESPAÑA</span>
+        </div>
+      </div>
+
+      <span class="sello rojo" style="position:static;display:inline-block;margin-top:24px;transform:rotate(-3deg)">Asunto pendiente</span>
+
+      <div class="acciones">
+        <button class="btn ghost" onclick="irA('s2')"><span class="ar">←</span> Volver</button>
+        <button class="btn" onclick="abrirSistema()">Programar salida <span class="ar">→</span></button>
+      </div>
+    </section>
+
+    <!-- pie de hoja -->
+    <div class="pie">
+      <div class="qr" aria-hidden="true"></div>
+      <div class="barcode" id="barcode" aria-hidden="true"></div>
+      <div class="meta">
+        Documento firmado digitalmente (simulado)<br>
+        Código de verificación: <span class="mono">KS-ESP-2026-✦</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="rastro" aria-hidden="true">
+  <span id="r1"><b>1</b> Carátula</span><span class="sep">›</span>
+  <span id="r2">2 Informe</span><span class="sep">›</span>
+  <span id="r3">3 Resolución</span>
+</div>
+
+<!-- =================== SECCIÓN 4: EASTER EGG =================== -->
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Sistema predictivo">
+  <div class="sistema">
+    <div class="barra">SISTEMA INTERNO · CONEXIÓN SEGURA</div>
+    <div class="ct">
+      <h3>ESTADO DE RESPUESTA — SISTEMA PREDICTIVO</h3>
+      <p class="desc">El sistema ha detectado variaciones en la decisión del administrado. Se activa el módulo de simulación de respuesta emocional.</p>
+
+      <div class="opciones" id="opciones">
+        <button class="op" onclick="responder(1)"><span class="mark">A</span> Bueno ya, estoy aburrida</button>
+        <button class="op" onclick="responder(2)"><span class="mark">B</span> Depende de si hay canchita</button>
+        <button class="op" onclick="responder(3)"><span class="mark">C</span> Ahí no más, papito eres red flag</button>
+      </div>
+
+      <div class="veredicto" id="veredicto">
+        <span class="vt">SALIDA DEL SISTEMA</span>
+        <span id="veredicto-txt"></span>
+      </div>
+
+      <div class="acciones" style="margin-top:18px">
+        <button class="btn ghost" onclick="cerrarSistema()"><span class="ar">←</span> Volver al expediente</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Fecha de recepción
+  (function(){
+    const meses=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+    const d=new Date();
+    const f=`${String(d.getDate()).padStart(2,'0')} ${meses[d.getMonth()]} ${d.getFullYear()}`;
+    document.getElementById('fecha-rec').textContent=f;
+  })();
+
+  // Código de barras decorativo
+  (function(){
+    const bc=document.getElementById('barcode');let html='';
+    const semilla=[2,1,3,1,1,2,1,3,1,1,2,2,1,1,3,1,2,1,1,2,3,1,1,2,1,1,3,1,2,1,1];
+    semilla.forEach(w=>{html+=`<i style="width:${w}px"></i>`;});
+    bc.innerHTML=html;
+  })();
+
+  function irA(id){
+    document.querySelectorAll('.seccion').forEach(s=>s.classList.remove('activa'));
+    const el=document.getElementById(id);
+    el.classList.add('activa');
+    // rastro
+    const n=Number(id.replace('s',''));
+    [1,2,3].forEach(i=>{
+      const r=document.getElementById('r'+i);
+      if(!r)return;
+      r.innerHTML = (i<=n? `<b>${i}</b>`:`${i}`) + ' ' + ['Carátula','Informe','Resolución'][i-1];
+    });
+    // sello "recibido" solo en carátula
+    document.getElementById('sello-recibido').style.display = (id==='s1')?'block':'none';
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function abrirSistema(){
+    document.getElementById('veredicto').classList.remove('activa');
+    document.getElementById('opciones').style.display='flex';
+    document.getElementById('overlay').classList.add('activa');
+  }
+  function cerrarSistema(){
+    document.getElementById('overlay').classList.remove('activa');
+  }
+  function responder(n){
+    const txt={
+      1:"Se recomienda programación inmediata de salida recreativa.",
+      2:"Condición aceptada: incluir canchita obligatoria en la resolución.",
+      3:"Sistema mantiene expediente activo sin cierre automático."
+    }[n];
+    document.getElementById('opciones').style.display='none';
+    const v=document.getElementById('veredicto');
+    document.getElementById('veredicto-txt').textContent=txt;
+    v.classList.add('activa');
+  }
+
+  // cerrar overlay con Escape o clic fuera
+  document.getElementById('overlay').addEventListener('click',e=>{
+    if(e.target.id==='overlay')cerrarSistema();
+  });
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape')cerrarSistema();
+  });
+</script>
+</body>
+</html>
